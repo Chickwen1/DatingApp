@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\missi\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\missi\\.nuget\\packages"
+    ]
+  }
+}
