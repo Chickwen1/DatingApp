@@ -23,7 +23,9 @@ namespace DatingApp.API.Controllers
         private readonly IMapper _mapper;
         private readonly IOptions<CloudinarySettings> _cloudinaryConfig;
         private Cloudinary _cloudinary;
-        public PhotosController(IDatingRepository repo, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
+
+        public PhotosController(IDatingRepository repo, IMapper mapper,
+            IOptions<CloudinarySettings> cloudinaryConfig)
         {
             _cloudinaryConfig = cloudinaryConfig;
             _mapper = mapper;
@@ -49,7 +51,8 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPhotoForUser(int userId, [FromForm] PhotoForCreationDto photoForCreationDto)
+        public async Task<IActionResult> AddPhotoForUser(int userId,
+            [FromForm]PhotoForCreationDto photoForCreationDto)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
@@ -67,7 +70,8 @@ namespace DatingApp.API.Controllers
                     var uploadParams = new ImageUploadParams()
                     {
                         File = new FileDescription(file.Name, stream),
-                        Transformation = new Transformation().Width(500).Height(500).Crop("fill").Gravity("face")
+                        Transformation = new Transformation()
+                            .Width(500).Height(500).Crop("fill").Gravity("face")
                     };
 
                     uploadResult = _cloudinary.Upload(uploadParams);
@@ -79,8 +83,8 @@ namespace DatingApp.API.Controllers
 
             var photo = _mapper.Map<Photo>(photoForCreationDto);
 
-            if (userFromRepo.Photos.Any(u => u.IsMain))
-                photo.IsMain = false;
+            if (!userFromRepo.Photos.Any(u => u.IsMain))
+                photo.IsMain = true;
 
             userFromRepo.Photos.Add(photo);
 
@@ -148,7 +152,8 @@ namespace DatingApp.API.Controllers
                 }
             }
 
-            if (photoFromRepo.PublicId == null) {
+            if (photoFromRepo.PublicId == null)
+            {
                 _repo.Delete(photoFromRepo);
             }
 
@@ -157,5 +162,6 @@ namespace DatingApp.API.Controllers
 
             return BadRequest("Failed to delete the photo");
         }
+
     }
 }
